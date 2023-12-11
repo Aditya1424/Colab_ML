@@ -1,0 +1,55 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+height=[170,141,164,130,120]
+weight=[80,64,71,50,45]
+X=np.array(height)
+y=np.array(weight)
+X_mean=np.mean(X)
+y_mean=np.mean(y)
+
+den=0
+num=0
+for i in range(len(height)):
+    a=X[i]-X_mean
+    b=y[i]-y_mean
+    c=a*b
+    num+=c
+    d=a*a
+    den+=d
+m=num/den
+c=y_mean-(m*X_mean)
+
+print(m,c)
+
+y_predicted=[]
+for i in range(len(height)):
+    y_predicted.append(m*X[i]+c)
+print(y_predicted)
+
+def RMSE(y,y_predicted):
+    n=len(y)
+    sum=0
+    for i in range(n):
+        sum+=(y[i]-y_predicted[i])**2
+    return (sum/n)**0.5
+print(RMSE(y,y_predicted))
+
+def MAE(y,y_predicted):
+    n=len(y)
+    sum=0
+    for i in range(n):
+        sum+=abs(y[i]-y_predicted[i])
+    return (sum/n)**0.5
+print(MAE(y,y_predicted))
+
+def RSquare(y,y_predicted):
+    n=len(y)
+    y_mean=np.mean(y)
+    num=0
+    den=0
+    for i in range(n):
+        num+=(y[i]-y_predicted[i])**2
+        den+=(y[i]-y_mean)**2
+    return 1-(num/den)
+print(RSquare(y,y_predicted))

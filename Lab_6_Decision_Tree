@@ -1,0 +1,33 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = pd.read_csv('../Dataset/diabetes.csv')
+data.head()
+
+from sklearn.model_selection import train_test_split
+
+
+X=data.drop('Outcome',axis=1)
+y=data['Outcome']
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.20,random_state=0)
+print(X_train,y_train)
+print(X_test,y_test)
+
+from sklearn.tree import DecisionTreeClassifier
+
+DTCg=DecisionTreeClassifier(max_depth=4,criterion='gini')
+DTCe=DecisionTreeClassifier(max_depth=4,criterion='entropy')
+modele=DTCe.fit(X_train,y_train)
+modelg=DTCg.fit(X_train,y_train)
+y_predg=modelg.predict(X_test)
+y_prede=modele.predict(X_test)
+
+
+from sklearn import metrics
+print('Accuracy of model using gini: ',metrics.accuracy_score(y_test,y_predg))
+print('Accuracy of model using entropy: ',metrics.accuracy_score(y_test,y_prede))
+
+from sklearn import tree
+fig = plt.figure(figsize=(25,20))
+tree.plot_tree(DTCg,filled=True)

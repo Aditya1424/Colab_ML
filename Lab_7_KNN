@@ -1,0 +1,40 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import StandardScaler
+data = pd.read_csv('../Dataset/iris.csv')
+data.head()
+X = data.drop('species',axis=1)
+y=data['species']
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2,random_state=0)
+
+from sklearn.neighbors import KNeighborsClassifier
+KNN=KNeighborsClassifier(n_neighbors=5)
+model=KNN.fit(X_train,y_train)
+y_pred=model.predict(X_test)
+y_pred
+
+from sklearn import metrics
+print("Accuracy : ",metrics.accuracy_score(y_test,y_pred))
+print("Precision: ",metrics.precision_score(y_test,y_pred,average='weighted'))
+print("Recall: ",metrics.recall_score(y_test,y_pred,average='weighted'))
+print("f1 score: ",metrics.f1_score(y_test,y_pred,average='weighted'))
+
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+k_values=list(range(1,30))
+errors=[]
+
+for i in k_values:
+    KNN = KNeighborsClassifier(n_neighbors=i)
+    model = KNN.fit(X_train,y_train)
+    y_pred=model.predict(X_test)
+    error=1 - metrics.accuracy_score(y_test,y_pred)
+    errors.append(error)
+
+plt.plot(k_values,errors)
+

@@ -1,0 +1,64 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+data=pd.read_csv("..\Dataset\iris.csv")
+data.head()
+
+from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
+data['species']=le.fit_transform(data['species'])
+data.head()
+
+from sklearn.model_selection import train_test_split
+X=data.iloc[:,0:4]
+y=data.iloc[:,4]
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2)
+
+from sklearn.svm import SVC
+svc=SVC(kernel='linear')
+model=svc.fit(X_train,y_train)
+y_pred=model.predict(X_test)
+print(y_test.values)
+print()
+print(y_pred)
+
+from sklearn import metrics
+
+cnf=metrics.confusion_matrix(y_test,y_pred)
+print(cnf)
+print()
+print("Accuracy: ",metrics.accuracy_score(y_test,y_pred))
+print("Precision: ",metrics.precision_score(y_test,y_pred,average='weighted'))
+print("Recall: ",metrics.recall_score(y_test,y_pred,average='weighted'))
+print("f1 score: ",metrics.f1_score(y_test,y_pred,average='weighted'))
+
+#-----------------------------------------------------------------------------------------------
+
+# SVM for wine dataset
+
+data=pd.read_csv('../Dataset/winequality_red.csv')
+X=data.drop(columns='quality')
+y=data['quality']
+
+from sklearn.preprocessing import StandardScaler
+std_scaler=StandardScaler()
+X=std_scaler.fit_transform(X)
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.20,random_state=0)
+
+from sklearn.svm import SVC
+svc_rbf=SVC(kernel='rbf')
+svc_linear=SVC(kernel='linear')
+svc_poly=SVC(kernel='poly')
+model_rbf=svc_rbf.fit(X_train,y_train)
+model_linear=svc_linear.fit(X_train,y_train)
+model_poly=svc_poly.fit(X_train,y_train)
+y_pred_rbf=model_rbf.predict(X_test)
+y_pred_linear=model_linear.predict(X_test)
+y_pred_poly=model_poly.predict(X_test)
+
+print("Accuracy using poly: ",metrics.accuracy_score(y_test,y_pred_poly))
+print("Accuracy using linear: ",metrics.accuracy_score(y_test,y_pred_linear))
+print("Accuracy using rbf: ",metrics.accuracy_score(y_test,y_pred_rbf))

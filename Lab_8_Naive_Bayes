@@ -1,0 +1,69 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = pd.read_csv('../Dataset/iris.csv')
+data.head()
+X = data.drop('species',axis=1)
+y=data['species']
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2,random_state=0)
+
+from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import BernoulliNB
+Gaussian_NB = GaussianNB()
+Multinomial_NB = MultinomialNB()
+Bernoulli_NB = BernoulliNB()
+Gaussian_model = Gaussian_NB.fit(X_train,y_train)
+Multinomial_model = Multinomial_NB.fit(X_train,y_train)
+Bernoulli_model = Bernoulli_NB.fit(X_train,y_train)
+y_pred_Gaussian = Gaussian_model.predict(X_test)
+y_pred_Multinomial = Multinomial_model.predict(X_test)
+y_pred_Bernoulli = Bernoulli_model.predict(X_test)
+
+from sklearn import metrics
+print("Accuracy using Gaussian : ",metrics.accuracy_score(y_test,y_pred_Gaussian))
+print("Accuracy using Multinomial : ",metrics.accuracy_score(y_test,y_pred_Multinomial))
+print("Accuracy using Bernoulli : ",metrics.accuracy_score(y_test,y_pred_Bernoulli))
+# print("Precision: ",metrics.precision_score(y_test,y_pred,average='weighted'))
+# print("Recall: ",metrics.recall_score(y_test,y_pred,average='weighted'))
+# print("f1 score: ",metrics.f1_score(y_test,y_pred,average='weighted'))
+
+
+
+# Adult income dataset-----------------------------------------------------------------------------
+
+data = pd.read_csv('../Dataset/adult_income.csv')
+data.head()
+
+from sklearn import preprocessing
+le=preprocessing.LabelEncoder()
+data[['workclass','education','marital-status','occupation','relationship','race','gender','native-country']]=data[['workclass','education','marital-status','occupation','relationship','race','gender','native-country']].apply(le.fit_transform)
+data.head()
+
+data['income']=le.fit_transform(data['income'])
+data['income'].unique()
+data['income']
+
+X = data.drop('income',axis=1)
+y = data['income']
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+std_scaler = StandardScaler()
+transformed_data=std_scaler.fit_transform(X)
+X_train,X_test,y_train,y_test=train_test_split(transformed_data,y,test_size=0.20,random_state=0)
+
+from sklearn.naive_bayes import GaussianNB
+Gaussian_NB = GaussianNB()
+Gaussian_model = Gaussian_NB.fit(X_train,y_train)
+y_pred_Gaussian = Gaussian_model.predict(X_test)
+
+from sklearn import metrics
+print("Accuracy using Gaussian : ",metrics.accuracy_score(y_test,y_pred_Gaussian))
+print(metrics.classification_report(y_test,y_pred_Gaussian))
+
+
+

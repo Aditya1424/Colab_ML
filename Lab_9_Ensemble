@@ -1,0 +1,48 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+data = pd.read_csv('../Dataset/diabetes.csv')
+data.head()
+X = data.drop('Outcome',axis=1)
+y=data['Outcome']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+
+# Homogenous
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import BaggingClassifier
+
+decision = DecisionTreeClassifier()
+bagging = BaggingClassifier(estimator=decision, n_estimators=3)
+
+model=bagging.fit(X_train,y_train)
+y_pred = model.predict(X_test)
+dtc=decision.fit(X_train,y_train)
+y_predD=dtc.predict(X_test)
+
+from sklearn import metrics
+print('Accuracy of bagging model: ',metrics.accuracy_score(y_test,y_pred))
+print('Accuracy of decision tree model: ',metrics.accuracy_score(y_test,y_predD))
+
+
+
+# Heterogenous
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import VotingClassifier
+
+decision = DecisionTreeClassifier()
+KNN=KNeighborsClassifier()
+svc=SVC()
+
+voting = VotingClassifier(estimators=[('DT',decision),('knn',KNN),('SVC',svc)])
+modelHe = voting.fit(X_train,y_train)
+y_predHe = modelHe.predict(X_test)
+
+from sklearn import metrics
+print('Accuracy of HeteroBagging model: ',metrics.accuracy_score(y_test,y_predHe))
